@@ -12,5 +12,3 @@ export const weatherClient = axios.create({
         lang: 'en',
     },
 });
-
-

@@ -1,6 +1,6 @@
-import {createBrowserRouter, Navigate, RouterProvider} from 'react-router';
-import Layout from "@src/Layout";
-import Weather from "@src/pages/Weather.tsx";
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router';
+import Layout from '@src/Layout';
+import Weather from '@src/pages/main/Weather.tsx';
 
 const router = createBrowserRouter([
     {
@@ -9,26 +9,26 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <Navigate to='/weather' replace={true}/>
+                element: <Navigate to="/weather" replace={true} />,
             },
             {
                 path: 'weather',
-                element: <Weather />
+                element: <Weather />,
             },
             {
                 path: 'forecast',
-                element: <h1>Forecast</h1>
+                element: <h1>as</h1>,
             },
             {
                 path: 'favorites',
-                element: <h1>Favorites</h1>
+                element: <h1>Favorites</h1>,
             },
-        ]
-    }
-])
+        ],
+    },
+]);
 
 const App = () => {
-    return <RouterProvider router={router} />
+    return <RouterProvider router={router} />;
 };
 
 export default App;

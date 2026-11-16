@@ -36,7 +36,6 @@ export interface Precipitation {
     '3h'?: number;
 }
 
-// 1. Ответ для текущей погоды (/data/2.5/weather)
 export interface CurrentWeatherResponse {
     coord: Coord;
     weather: WeatherCondition[];
@@ -61,7 +60,6 @@ export interface CurrentWeatherResponse {
     cod: number;
 }
 
-// 2. Элемент списка в прогнозе на 5 дней
 export interface ForecastItem {
     dt: number;
     main: MainMetrics;
@@ -69,18 +67,18 @@ export interface ForecastItem {
     clouds: Clouds;
     wind: Wind;
     visibility: number;
-    pop: number; // Вероятность осадков (0..1)
+    pop: number;
     rain?: Precipitation;
     snow?: Precipitation;
     sys: {
-        pod: 'd' | 'n'; // День или ночь
+        pod: 'd' | 'n';
     };
     dt_txt: string;
 }
 
 // 3. Полный ответ для прогноза на 5 дней (/data/2.5/forecast)
 export interface FiveDayForecastResponse {
-    cod: string; // Обратите внимание: здесь приходит строка "200", а не число
+    cod: string;
     message: number;
     cnt: number;
     list: ForecastItem[];

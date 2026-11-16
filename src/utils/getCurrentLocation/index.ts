@@ -1,10 +1,12 @@
-import type { Coord } from '@src/types/response'
+import type { Coord } from '@src/types/response';
 
 interface Coordinates extends Coord {
     accuracy: number;
 }
 
-export const getCurrentLocation = (options?: PositionOptions): Promise<Coordinates> => {
+export const getCurrentLocation = (
+    options?: PositionOptions
+): Promise<Coordinates> => {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
             (position: GeolocationPosition) => {
@@ -15,9 +17,13 @@ export const getCurrentLocation = (options?: PositionOptions): Promise<Coordinat
                 });
             },
             (error: GeolocationPositionError) => {
-                reject(new Error(`Geolocation error (${error.code}): ${error.message}`));
+                reject(
+                    new Error(
+                        `Geolocation error (${error.code}): ${error.message}`
+                    )
+                );
             },
             options
         );
-    })
-}
+    });
+};

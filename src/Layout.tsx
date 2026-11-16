@@ -1,15 +1,15 @@
-import { Outlet  } from "react-router";
-import Header from "@src/components/header/Header.tsx";
+import { Outlet } from 'react-router';
+import Header from '@src/components/header/Header.tsx';
 
 const Layout = () => {
     return (
-        <div>
+        <div className="relative flex flex-col items-center justify-center h-screen">
             <Header />
-            <div className='w-full p-5 sm:w-lg sm:mx-auto md:w-2xl lg:w-4xl xl:w-6xl'>
+            <div className="w-full p-5 sm:w-md sm:mx-auto md:w-xl lg:w-3xl xl:w-5xl">
                 <Outlet />
             </div>
         </div>
     );
 };
 
-export default Layout
+export default Layout;
