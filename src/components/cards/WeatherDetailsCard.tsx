@@ -1,30 +1,23 @@
-import type { FC } from 'react';
+import { useAppSelector } from '@src/hooks/useStore';
+
 import { Card, CardContent } from '@root/components/ui/card';
 import { Skeleton } from '@root/components/ui/skeleton';
 import { Droplets, Eye, Gauge, Wind } from 'lucide-react';
 
-export interface WeatherSecondaryCardProps {
-    loading: boolean;
-    windSpeed: number;
-    humidity: number;
-    pressure: number;
-    visibility: number;
-}
+const WeatherDetailsCard = () => {
+    const currentWeather = useAppSelector(
+        (state) => state.weather.currentWeather
+    );
 
-const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
-    loading,
-    windSpeed,
-    humidity,
-    pressure,
-    visibility,
-}) => {
+    const currentUnit = useAppSelector((state) => state.unit.currentUnit);
+
     return (
         <Card className="grid grid-rows-1">
             <CardContent className="content-center">
                 <div className="grid grid-cols-2 gap-x-5">
                     <div className="grid grid-rows-2 gap-y-5">
                         <div className="flex items-start gap-x-3">
-                            {loading ? (
+                            {!currentWeather ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">
@@ -32,7 +25,7 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                                 </div>
                             )}
                             <div className="flex flex-col justify-between">
-                                {loading ? (
+                                {!currentWeather ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4" />
                                         <Skeleton className="w-20 h-3" />
@@ -43,14 +36,17 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                                             Wind Speed
                                         </h4>
                                         <h5 className="text-muted-foreground">
-                                            {windSpeed}m/s
+                                            {currentWeather.wind.speed}
+                                            {currentUnit === 'metric'
+                                                ? 'm/s'
+                                                : 'mph'}
                                         </h5>
                                     </>
                                 )}
                             </div>
                         </div>
                         <div className="flex items-start gap-x-3">
-                            {loading ? (
+                            {!currentWeather ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">
@@ -58,7 +54,7 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                                 </div>
                             )}
                             <div className="flex flex-col justify-between">
-                                {loading ? (
+                                {!currentWeather ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4" />
                                         <Skeleton className="w-20 h-3" />
@@ -67,7 +63,7 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                                     <>
                                         <h4 className="font-bold">Humidity</h4>
                                         <h5 className="text-muted-foreground">
-                                            {humidity}%
+                                            {currentWeather.main.humidity}%
                                         </h5>
                                     </>
                                 )}
@@ -77,7 +73,7 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                     <div className="grid grid-rows-2 gap-y-5">
                         <div className="flex items-start gap-x-3 justify-self-end">
                             <div className="flex flex-col justify-between text-end">
-                                {loading ? (
+                                {!currentWeather ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4" />
                                         <Skeleton className="w-20 h-3" />
@@ -86,12 +82,12 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                                     <>
                                         <h4 className="font-bold">Pressure</h4>
                                         <h5 className="text-muted-foreground">
-                                            {pressure}hPa
+                                            {currentWeather.main.pressure}hPa
                                         </h5>
                                     </>
                                 )}
                             </div>
-                            {loading ? (
+                            {!currentWeather ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">
@@ -101,7 +97,7 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                         </div>
                         <div className="flex items-start gap-x-3 justify-self-end">
                             <div className="flex flex-col justify-between text-end">
-                                {loading ? (
+                                {!currentWeather ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4 justify-self-end" />
                                         <Skeleton className="w-20 h-3 justify-self-end" />
@@ -112,13 +108,13 @@ const WeatherDetailsCard: FC<WeatherSecondaryCardProps> = ({
                                             Visibility
                                         </h4>
                                         <h5 className="text-muted-foreground">
-                                            {visibility}m
+                                            {currentWeather.visibility}m
                                         </h5>
                                     </>
                                 )}
                             </div>
 
-                            {loading ? (
+                            {!currentWeather ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">

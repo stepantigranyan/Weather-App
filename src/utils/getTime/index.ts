@@ -7,11 +7,13 @@ export const getTime = (time: number, timezone: number) => {
     return `${hours}:${minutes}`;
 };
 
-export const getDayName = (time?: number) => {
+export const getDayName = (time?: number | string) => {
     let now: Date;
 
-    if (time) {
+    if (typeof time === 'number') {
         now = new Date((time) * 1000);
+    } else if (typeof time === 'string') {
+        now = new Date(time);
     } else {
         now = new Date();
     }

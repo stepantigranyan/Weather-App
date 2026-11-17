@@ -1,18 +1,44 @@
-import type { Dispatch, FC, SetStateAction } from 'react';
+import {
+    type Dispatch,
+    type FC,
+    type SubmitEvent,
+    type SetStateAction,
+    useState,
+} from 'react';
+
 import { NavLink } from 'react-router';
+import { useAppSelector, useAppDispatch } from '@src/hooks/useStore';
+
+import type { Units } from '@src/types/request';
+
+import { setUnit } from '@src/store/slices/unitSlice';
+import { setWeather } from '@src/store/slices/weatherSlice';
+import { setForecast } from '@src/store/slices/forecastSlice';
+
+import { weatherApi } from '@src/api';
+import { COORDS_KEY } from '@src/utils/getCurrentLocation';
+
 
 import {
     Sheet,
     SheetContent,
     SheetTitle,
     SheetTrigger,
-    SheetFooter,
 } from '@root/components/ui/sheet';
+
+import {
+    Field,
+    FieldGroup,
+    FieldLegend,
+    FieldSet,
+    FieldDescription,
+    FieldContent,
+    FieldLabel,
+} from '@root/components/ui/field';
 
 import { Separator } from '@root/components/ui/separator';
 import { Button } from '@root/components/ui/button';
-import { Switch } from '@root/components/ui/switch';
-import { RadioGroup } from '@root/components/ui/radio-group';
+import { RadioGroup, RadioGroupItem } from '@root/components/ui/radio-group';
 
 import {
     Sun,
@@ -27,6 +53,27 @@ interface SideBarProps {
 }
 
 const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
+    const currentUnit = useAppSelector((state) => state.unit.currentUnit) as Units;
+    const dispatch = useAppDispatch();
+
+    const [unt, setUnt] = useState<Units>(currentUnit);
+
+    const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        dispatch(setWeather(null));
+        dispatch(setForecast(null));
+
+        onOpenChange(false);
+        dispatch(setUnit(unt));
+
+        const coords = JSON.parse(localStorage.getItem(COORDS_KEY));
+        const weatherData = await weatherApi.getCurrentWeather(coords);
+        const forecastData = await weatherApi.getFiveDayForecast(coords);
+
+        dispatch(setWeather(weatherData));
+        dispatch(setForecast(forecastData));
+    };
+
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
             <SheetTrigger
@@ -46,9 +93,9 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
                     Menu
                 </SheetTitle>
 
-                <nav className="grid grid-rows-[1fr_4fr] mt-4">
+                <nav className="grid grid-rows-[1fr_4fr_1fr] mt-4">
                     <div>
-                        <h4 className="text-xl font-bold mb-2">Navigation</h4>
+                        <h4 className="text-xl font-bold mb-2">Pages</h4>
                         <Separator />
                     </div>
                     <div className="grid grid-rows-3">
@@ -78,20 +125,76 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
                             className="group px-3 py-2 text-lg font-medium flex items-center gap-x-2 transition-colors duration-200 hover:bg-muted"
                         >
                             <span>
-                                <Star className="size-6 group-hover:fill-red-600 transition-colors duration-200" />
+                                <Star className="size-6 group-hover:fill-yellow-400 transition-colors duration-200" />
                             </span>
                             <span>Favorite Cities</span>
                         </NavLink>
                     </div>
                 </nav>
-                <SheetFooter className="h-10 bg-red-50">
-                    <div className="grid grid-cols-2">
-                        <div>
-                            <Switch size='default' />
-                        </div>
-                        <div></div>
+                <div>
+                    <div>
+                        <h4 className="text-xl font-bold mb-2">Settings</h4>
+                        <Separator />
                     </div>
-                </SheetFooter>
+                    <div className="grid grid-rows-2 mt-4">
+                        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
+                            <FieldGroup>
+                                <FieldSet>
+                                    <FieldLegend variant="label">
+                                        Temperature Unit
+                                    </FieldLegend>
+                                    <FieldDescription>
+                                        Choose which scale to use for
+                                        temperature conversions.
+                                    </FieldDescription>
+
+                                    <RadioGroup
+                                        value={unt}
+                                        onValueChange={(val) =>
+                                            setUnt(val)
+                                        }
+                                    >
+                                        <Field orientation="horizontal">
+                                            <RadioGroupItem
+                                                value="metric"
+                                                id="unit-celsius"
+                                            />
+                                            <FieldContent>
+                                                <FieldLabel htmlFor="unit-celsius">
+                                                    Celsius (°C)
+                                                </FieldLabel>
+                                                <FieldDescription>
+                                                    Metric scale where water
+                                                    freezes at 0° and boils at
+                                                    100°.
+                                                </FieldDescription>
+                                            </FieldContent>
+                                        </Field>
+
+                                        <Field orientation="horizontal">
+                                            <RadioGroupItem
+                                                value="imperial"
+                                                id="unit-fahrenheit"
+                                            />
+                                            <FieldContent>
+                                                <FieldLabel htmlFor="unit-fahrenheit">
+                                                    Fahrenheit (°F)
+                                                </FieldLabel>
+                                                <FieldDescription>
+                                                    Imperial scale where water
+                                                    freezes at 32° and boils at
+                                                    212°.
+                                                </FieldDescription>
+                                            </FieldContent>
+                                        </Field>
+                                    </RadioGroup>
+                                </FieldSet>
+                            </FieldGroup>
+
+                            <Button type="submit">Save Unit</Button>
+                        </form>
+                    </div>
+                </div>
             </SheetContent>
         </Sheet>
     );

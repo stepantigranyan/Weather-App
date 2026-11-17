@@ -1,4 +1,4 @@
-export type Units = 'metric' | 'imperial' | 'standard';
+export type Units = 'metric' | 'imperial';
 export type Lang = 'en' | 'ru';
 
 export interface BaseWeatherParams {

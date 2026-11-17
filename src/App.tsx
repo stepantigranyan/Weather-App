@@ -1,6 +1,20 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router';
+import { Provider } from 'react-redux';
+import { store } from '@src/store';
+
 import Layout from '@src/Layout';
-import Weather from '@src/pages/main/Weather.tsx';
+import Weather from '@src/pages/main/Weather';
+import Forecast from '@src/pages/main/Forecast';
+import Favorites from '@src/pages/main/Favorites';
+
+localStorage.setItem(
+    'cities',
+    JSON.stringify([
+        { name: 'Yerevan', coords: { lon: 40.1811, lat: 44.5136 }, id: '124' },
+        { name: 'Paris', coords: { lon: 2.3522, lat: 48.8566 }, id: '125' },
+        { name: 'Yerevan', coords: { lon: 40.1811, lat: 44.5136 }, id: '124' },
+    ])
+);
 
 const router = createBrowserRouter([
     {
@@ -17,18 +31,22 @@ const router = createBrowserRouter([
             },
             {
                 path: 'forecast',
-                element: <h1>as</h1>,
+                element: <Forecast />,
             },
             {
                 path: 'favorites',
-                element: <h1>Favorites</h1>,
+                element: <Favorites />,
             },
         ],
     },
 ]);
 
 const App = () => {
-    return <RouterProvider router={router} />;
+    return (
+        <Provider store={store}>
+            <RouterProvider router={router} />
+        </Provider>
+    );
 };
 
 export default App;

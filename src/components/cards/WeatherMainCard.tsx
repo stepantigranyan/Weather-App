@@ -1,4 +1,5 @@
-import type { FC } from 'react';
+import { useAppSelector } from '@src/hooks/useStore';
+
 import {
     Card,
     CardContent,
@@ -12,21 +13,10 @@ import { Separator } from '@root/components/ui/separator';
 import { getFullDate, getDayName } from '@src/utils/getTime';
 import { capitalize } from '@src/utils/capitalize';
 
-import type { MainMetrics, WeatherCondition } from '@src/types/response';
+const WeatherMainCard = () => {
+    const currentWeather = useAppSelector((state) => state.weather.currentWeather)
+    const currentUnit = useAppSelector((state) => state.unit.currentUnit);
 
-interface MainCardProps {
-    loading: boolean;
-    name: string;
-    main: MainMetrics;
-    sys: {
-        country: string;
-        sunrise: number;
-        sunset: number;
-    };
-    weather: WeatherCondition;
-}
-
-const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather }) => {
     const dayName = getDayName();
     const fullDate = getFullDate();
 
@@ -34,10 +24,10 @@ const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather 
         <Card className="p-2">
             <CardHeader>
                 <CardTitle className="text-xl font-bold">
-                    {loading ? (
+                    {!currentWeather ? (
                         <Skeleton className="w-2/3 h-5" />
                     ) : (
-                        `${name}, ${sys.country}`
+                        `${currentWeather.name}, ${currentWeather.sys.country}`
                     )}
                 </CardTitle>
                 <Separator />
@@ -47,7 +37,7 @@ const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather 
                     <div className="grid grid-cols-2 gap-x-5">
                         <div className="grid grid-rows-2">
                             <div className="content-start">
-                                {loading ? (
+                                {!currentWeather ? (
                                     <div className="grid grid-rows-2 gap-y-2">
                                         <Skeleton className="w-1/2 h-5" />
                                         <Skeleton className="w-2/3 h-5" />
@@ -62,24 +52,30 @@ const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather 
                                 )}
                             </div>
                             <div className="content-center">
-                                {loading ? (
+                                {!currentWeather ? (
                                     <Skeleton className="w-full h-15" />
                                 ) : (
-                                    <p className="text-5xl">{main.temp}C</p>
+                                    <p className="text-5xl">
+                                        {currentWeather.main.temp}
+                                        {currentUnit === 'metric' ? '°C' : '°F'}
+                                    </p>
                                 )}
                             </div>
                         </div>
                         <div className="content-center justify-self-end">
-                            {loading ? (
+                            {!currentWeather ? (
                                 <div>
                                     <Skeleton className="w-30 h-20" />
                                 </div>
                             ) : (
                                 <>
                                     <img
-                                        className='size-30'
-                                        src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
-                                        alt={weather.description}
+                                        className="size-30"
+                                        src={`https://openweathermap.org/img/wn/${currentWeather.weather[0].icon}@2x.png`}
+                                        alt={
+                                            currentWeather.weather[0]
+                                                .description
+                                        }
                                     />
                                 </>
                             )}
@@ -87,7 +83,7 @@ const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather 
                     </div>
                     <div className="grid grid-cols-2 gap-x-5">
                         <div className="justify-self-start content-start w-full">
-                            {loading ? (
+                            {!currentWeather ? (
                                 <div className="grid grid-rows-2 gap-y-1">
                                     <Skeleton className="w-1/2 h-5" />
                                     <Skeleton className="w-1/3 h-5" />
@@ -96,13 +92,14 @@ const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather 
                                 <>
                                     <h2 className="text-lg">Feels like</h2>
                                     <p className="text-lg text-muted-foreground">
-                                        {main.feels_like}
+                                        {currentWeather.main.feels_like}
+                                        {currentUnit === 'metric' ? '°C' : '°F'}
                                     </p>
                                 </>
                             )}
                         </div>
                         <div className="justify-self-end content-end text-end">
-                            {loading ? (
+                            {!currentWeather ? (
                                 <div className="grid grid-rows-3 gap-y-1">
                                     <Skeleton className="w-30 h-5 justify-self-end" />
                                     <Skeleton className="w-20 h-5 justify-self-end" />
@@ -111,13 +108,18 @@ const WeatherMainCard: FC<MainCardProps> = ({ loading, name, main, sys, weather 
                             ) : (
                                 <>
                                     <h2 className="text-lg">
-                                        {capitalize(weather.description ?? '')}
+                                        {capitalize(
+                                            currentWeather.weather[0]
+                                                .description
+                                        )}
                                     </h2>
                                     <p className="text-muted-foreground text-md">
-                                        High: {main.temp_max}
+                                        High: {currentWeather.main.temp_max}
+                                        {currentUnit === 'metric' ? '°C' : '°F'}
                                     </p>
                                     <p className="text-muted-foreground text-md">
-                                        Low: {main.temp_min}
+                                        Low: {currentWeather.main.temp_min}
+                                        {currentUnit === 'metric' ? '°C' : '°F'}
                                     </p>
                                 </>
                             )}

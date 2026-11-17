@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { type InternalAxiosRequestConfig } from 'axios';
+import unitsService from '@src/services/unitsService';
 
 const API_KEY: string = import.meta.env.VITE_API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
@@ -8,7 +9,13 @@ export const weatherClient = axios.create({
     timeout: 10000,
     params: {
         appid: API_KEY,
-        units: 'metric',
         lang: 'en',
     },
 });
+
+weatherClient.interceptors.request.use(
+    (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+        config.params.units = unitsService.get();
+        return config;
+    }
+);
