@@ -7,15 +7,6 @@ import Weather from '@src/pages/main/Weather';
 import Forecast from '@src/pages/main/Forecast';
 import Favorites from '@src/pages/main/Favorites';
 
-localStorage.setItem(
-    'cities',
-    JSON.stringify([
-        { name: 'Yerevan', coords: { lon: 40.1811, lat: 44.5136 }, id: '124' },
-        { name: 'Paris', coords: { lon: 2.3522, lat: 48.8566 }, id: '125' },
-        { name: 'Yerevan', coords: { lon: 40.1811, lat: 44.5136 }, id: '124' },
-    ])
-);
-
 const router = createBrowserRouter([
     {
         path: '/',
