@@ -1,8 +1,8 @@
 import citiesRepository from '@src/repositories/citiesRepository';
-import type { CityCreationAttributes } from '@src/types/other';
+import type { CityResponse } from '@src/types/other';
 
 class CitiesService {
-    add(data: CityCreationAttributes) {
+    add(data: CityResponse) {
         return citiesRepository.add(data);
     }
 
@@ -10,11 +10,11 @@ class CitiesService {
         return citiesRepository.getAll();
     }
 
-    getOne(id: string) {
+    getOne(id: number) {
         return citiesRepository.getOne(id);
     }
 
-    remove(id: string) {
+    remove(id: number) {
         return citiesRepository.remove(id);
     }
 }

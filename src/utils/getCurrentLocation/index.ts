@@ -1,10 +1,9 @@
 import type { Coord } from '@src/types/response';
+import coordsService from '@src/services/coordsService';
 
 interface Coordinates extends Coord {
     accuracy: number;
 }
-
-export const COORDS_KEY = 'coordinates';
 
 export const getCurrentLocation = (
     options?: PositionOptions
@@ -12,14 +11,7 @@ export const getCurrentLocation = (
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
             (position: GeolocationPosition) => {
-                localStorage.setItem(
-                    COORDS_KEY,
-                    JSON.stringify({
-                        lat: position.coords.latitude,
-                        lon: position.coords.longitude,
-                    })
-                );
-
+                coordsService.set({ lat: position.coords.latitude, lon: position.coords.longitude, });
                 resolve({
                     lat: position.coords.latitude,
                     lon: position.coords.longitude,

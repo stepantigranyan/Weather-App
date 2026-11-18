@@ -1,7 +1,7 @@
-export interface CityCreationAttributes {
+export interface CityResponse {
+    id: number;
     name: string;
-}
-
-export interface City extends CityCreationAttributes {
-    id: string;
+    country: string;
+    latitude: number;
+    longitude: number;
 }

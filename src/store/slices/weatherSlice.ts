@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { weatherApi } from '@src/api';
+import weatherApi  from '@src/api/weather';
 import { getCurrentLocation } from '@src/utils/getCurrentLocation';
 import type { UserWeatherParams } from '@src/types/request';
 
 const getWeather = async (params?: UserWeatherParams) => {
     const position = params ? params : await getCurrentLocation();
     return await weatherApi.getCurrentWeather(position);
-}
+};
 
 const weatherSlice = createSlice({
     name: 'appWeather',

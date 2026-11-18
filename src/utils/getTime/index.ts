@@ -11,7 +11,7 @@ export const getDayName = (time?: number | string) => {
     let now: Date;
 
     if (typeof time === 'number') {
-        now = new Date((time) * 1000);
+        now = new Date(time * 1000);
     } else if (typeof time === 'string') {
         now = new Date(time);
     } else {
@@ -25,7 +25,7 @@ export const getFullDate = (time?: number) => {
     let now: Date;
 
     if (time) {
-        now = new Date((time) * 1000);
+        now = new Date(time * 1000);
     } else {
         now = new Date();
     }

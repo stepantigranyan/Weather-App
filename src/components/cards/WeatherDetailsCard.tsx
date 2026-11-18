@@ -5,6 +5,8 @@ import { Skeleton } from '@root/components/ui/skeleton';
 import { Droplets, Eye, Gauge, Wind } from 'lucide-react';
 
 const WeatherDetailsCard = () => {
+    const loading = useAppSelector((state) => state.loading.loading);
+
     const currentWeather = useAppSelector(
         (state) => state.weather.currentWeather
     );
@@ -17,7 +19,7 @@ const WeatherDetailsCard = () => {
                 <div className="grid grid-cols-2 gap-x-5">
                     <div className="grid grid-rows-2 gap-y-5">
                         <div className="flex items-start gap-x-3">
-                            {!currentWeather ? (
+                            {loading ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">
@@ -25,7 +27,7 @@ const WeatherDetailsCard = () => {
                                 </div>
                             )}
                             <div className="flex flex-col justify-between">
-                                {!currentWeather ? (
+                                {loading ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4" />
                                         <Skeleton className="w-20 h-3" />
@@ -46,7 +48,7 @@ const WeatherDetailsCard = () => {
                             </div>
                         </div>
                         <div className="flex items-start gap-x-3">
-                            {!currentWeather ? (
+                            {loading ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">
@@ -54,7 +56,7 @@ const WeatherDetailsCard = () => {
                                 </div>
                             )}
                             <div className="flex flex-col justify-between">
-                                {!currentWeather ? (
+                                {loading ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4" />
                                         <Skeleton className="w-20 h-3" />
@@ -73,7 +75,7 @@ const WeatherDetailsCard = () => {
                     <div className="grid grid-rows-2 gap-y-5">
                         <div className="flex items-start gap-x-3 justify-self-end">
                             <div className="flex flex-col justify-between text-end">
-                                {!currentWeather ? (
+                                {loading ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4" />
                                         <Skeleton className="w-20 h-3" />
@@ -87,7 +89,7 @@ const WeatherDetailsCard = () => {
                                     </>
                                 )}
                             </div>
-                            {!currentWeather ? (
+                            {loading ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">
@@ -97,7 +99,7 @@ const WeatherDetailsCard = () => {
                         </div>
                         <div className="flex items-start gap-x-3 justify-self-end">
                             <div className="flex flex-col justify-between text-end">
-                                {!currentWeather ? (
+                                {loading ? (
                                     <div className="grid grid-rows-2 gap-y-1">
                                         <Skeleton className="w-30 h-4 justify-self-end" />
                                         <Skeleton className="w-20 h-3 justify-self-end" />
@@ -114,7 +116,7 @@ const WeatherDetailsCard = () => {
                                 )}
                             </div>
 
-                            {!currentWeather ? (
+                            {loading ? (
                                 <Skeleton className="size-10" />
                             ) : (
                                 <div className="p-1 border border-solid border-foreground rounded-md">

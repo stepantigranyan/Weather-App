@@ -7,6 +7,8 @@ import Weather from '@src/pages/main/Weather';
 import Forecast from '@src/pages/main/Forecast';
 import Favorites from '@src/pages/main/Favorites';
 
+import { Toaster } from '@root/components/ui/toast';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -34,9 +36,12 @@ const router = createBrowserRouter([
 
 const App = () => {
     return (
-        <Provider store={store}>
-            <RouterProvider router={router} />
-        </Provider>
+        <>
+            <Provider store={store}>
+                <RouterProvider router={router} />
+            </Provider>
+            <Toaster />
+        </>
     );
 };
 

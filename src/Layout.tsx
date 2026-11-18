@@ -5,7 +5,7 @@ const Layout = () => {
     return (
         <div className="relative">
             <Header />
-            <div className="w-full mt-50 p-5 sm:w-md sm:mx-auto md:w-xl lg:w-3xl xl:w-5xl">
+            <div className="w-full mt-30 p-5 sm:w-md sm:mx-auto md:w-xl lg:w-3xl xl:w-5xl">
                 <Outlet />
             </div>
         </div>

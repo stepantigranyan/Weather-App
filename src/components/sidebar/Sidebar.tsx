@@ -14,10 +14,10 @@ import type { Units } from '@src/types/request';
 import { setUnit } from '@src/store/slices/unitSlice';
 import { setWeather } from '@src/store/slices/weatherSlice';
 import { setForecast } from '@src/store/slices/forecastSlice';
+import { setLoading } from '@src/store/slices/loadingSlice.ts';
 
-import { weatherApi } from '@src/api';
-import { COORDS_KEY } from '@src/utils/getCurrentLocation';
-
+import weatherApi  from '@src/api/weather';
+import coordsService from '@src/services/coordsService';
 
 import {
     Sheet,
@@ -40,38 +40,37 @@ import { Separator } from '@root/components/ui/separator';
 import { Button } from '@root/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@root/components/ui/radio-group';
 
-import {
-    Sun,
-    Star,
-    CalendarDays,
-    Menu,
-} from 'lucide-react';
+import { Sun, Star, CalendarDays, Menu } from 'lucide-react';
 
 interface SideBarProps {
     open: boolean;
     onOpenChange: Dispatch<SetStateAction<boolean>>;
 }
 
-const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
-    const currentUnit = useAppSelector((state) => state.unit.currentUnit) as Units;
+const SideBar: FC<SideBarProps> = ({ open, onOpenChange }) => {
+    const currentUnit = useAppSelector(
+        (state) => state.unit.currentUnit
+    ) as Units;
+
     const dispatch = useAppDispatch();
 
     const [unt, setUnt] = useState<Units>(currentUnit);
 
     const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        dispatch(setWeather(null));
-        dispatch(setForecast(null));
+        dispatch(setLoading(true));
 
         onOpenChange(false);
         dispatch(setUnit(unt));
 
-        const coords = JSON.parse(localStorage.getItem(COORDS_KEY));
+        const coords = coordsService.get();
         const weatherData = await weatherApi.getCurrentWeather(coords);
         const forecastData = await weatherApi.getFiveDayForecast(coords);
 
         dispatch(setWeather(weatherData));
         dispatch(setForecast(forecastData));
+
+        dispatch(setLoading(false));
     };
 
     return (
@@ -88,7 +87,7 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
                     </Button>
                 }
             />
-            <SheetContent side="right" className="p-10 w-65 sm:w-75">
+            <SheetContent side="right" className="p-10 w-65 sm:w-75 z-2000">
                 <SheetTitle className="text-left text-3xl mb-4">
                     Menu
                 </SheetTitle>
@@ -100,7 +99,7 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
                     </div>
                     <div className="grid grid-rows-3">
                         <NavLink
-                            to="/weather"
+                            to={`/weather?lon=${coordsService.get().lon}&lat=${coordsService.get().lat}`}
                             onClick={() => onOpenChange(false)}
                             className="group px-3 py-2 text-lg font-medium flex items-center gap-x-2 transition-colors duration-200 hover:bg-muted"
                         >
@@ -110,7 +109,7 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
                             <span>Current Weather</span>
                         </NavLink>
                         <NavLink
-                            to="/forecast"
+                            to={`/forecast?lon=${coordsService.get().lon}&lat=${coordsService.get().lat}`}
                             onClick={() => onOpenChange(false)}
                             className="group px-3 py-2 text-lg font-medium flex items-center gap-x-2 transition-colors duration-200 hover:bg-muted"
                         >
@@ -137,7 +136,10 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
                         <Separator />
                     </div>
                     <div className="grid grid-rows-2 mt-4">
-                        <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
+                        <form
+                            onSubmit={handleSubmit}
+                            className="w-full max-w-sm space-y-6"
+                        >
                             <FieldGroup>
                                 <FieldSet>
                                     <FieldLegend variant="label">
@@ -150,9 +152,7 @@ const SideBar: FC<SideBarProps> = ({open, onOpenChange}) => {
 
                                     <RadioGroup
                                         value={unt}
-                                        onValueChange={(val) =>
-                                            setUnt(val)
-                                        }
+                                        onValueChange={(val) => setUnt(val)}
                                     >
                                         <Field orientation="horizontal">
                                             <RadioGroupItem

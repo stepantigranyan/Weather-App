@@ -2,7 +2,12 @@ import { useAppSelector } from '@src/hooks/useStore.ts';
 import type { FC } from 'react';
 import type { ForecastItem } from '@src/types/response';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@root/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@root/components/ui/card';
 import { Separator } from '@root/components/ui/separator';
 import { Skeleton } from '@root/components/ui/skeleton';
 
@@ -13,13 +18,14 @@ interface WeatherSecondaryCardProps {
 }
 
 const WeatherSecondaryCard: FC<WeatherSecondaryCardProps> = ({ data }) => {
+    const loading = useAppSelector((state) => state.loading.loading);
     const currentUnit = useAppSelector((state) => state.unit.currentUnit);
-    
+
     return (
         <Card className="size-full">
             <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                    {!data ? (
+                    {loading ? (
                         <>
                             <Skeleton className="w-1/2 h-5" />
                             <Skeleton className="w-1/3 h-5" />
@@ -37,7 +43,7 @@ const WeatherSecondaryCard: FC<WeatherSecondaryCardProps> = ({ data }) => {
                 <div className="grid grid-rows-[2fr_1fr] gap-y-5">
                     <div className="grid grid-cols-[2fr_1fr] gap-x-3">
                         <div className="content-center">
-                            {!data ? (
+                            {loading ? (
                                 <>
                                     <Skeleton className="w-2/3" />
                                 </>
@@ -51,7 +57,7 @@ const WeatherSecondaryCard: FC<WeatherSecondaryCardProps> = ({ data }) => {
                             )}
                         </div>
                         <div>
-                            {!data ? (
+                            {loading ? (
                                 <>
                                     <Skeleton />
                                 </>
@@ -64,7 +70,7 @@ const WeatherSecondaryCard: FC<WeatherSecondaryCardProps> = ({ data }) => {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-x-1 content-end">
-                        {!data ? (
+                        {loading ? (
                             <>
                                 <Skeleton className="w-2/3 h-4" />
                                 <Skeleton className="w-2/5 h-4 justify-self-end" />
@@ -82,6 +88,6 @@ const WeatherSecondaryCard: FC<WeatherSecondaryCardProps> = ({ data }) => {
             </CardContent>
         </Card>
     );
-}
+};
 
 export default WeatherSecondaryCard;

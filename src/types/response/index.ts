@@ -76,7 +76,6 @@ export interface ForecastItem {
     dt_txt: string;
 }
 
-// 3. Полный ответ для прогноза на 5 дней (/data/2.5/forecast)
 export interface FiveDayForecastResponse {
     cod: string;
     message: number;
@@ -93,3 +92,4 @@ export interface FiveDayForecastResponse {
         sunset: number;
     };
 }
+

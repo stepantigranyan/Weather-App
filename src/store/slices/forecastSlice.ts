@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { weatherApi } from '@src/api';
+import weatherApi  from '@src/api/weather';
 import { getCurrentLocation } from '@src/utils/getCurrentLocation';
 
 const initForecast = async () => {

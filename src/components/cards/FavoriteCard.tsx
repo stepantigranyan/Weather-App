@@ -1,128 +1,80 @@
-import  { type FC, useEffect, useState } from 'react';
-import type { Coord, CurrentWeatherResponse } from '@src/types/response';
+import { type FC } from 'react';
+import { useNavigate } from 'react-router';
+import { useAppDispatch } from '@src/hooks/useStore';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@root/components/ui/card';
-import { Separator } from '@root/components/ui/separator';
-import { Skeleton } from '@root/components/ui/skeleton';
+import type { CityResponse } from '@src/types/other';
 
-import { weatherApi } from '@src/api';
-import { useAppSelector } from '@src/hooks/useStore.ts';
-import { capitalize } from '@src/utils/capitalize';
+import weatherApi  from '@src/api/weather';
+
+import { setWeather } from '@src/store/slices/weatherSlice';
+import { setForecast } from '@src/store/slices/forecastSlice';
+
+import coordsService from '@src/services/coordsService';
+
+import FavoriteCityRemoveDialog from '@src/components/dialogs/FavoriteCitRemoveDialog.tsx';
+import { TableCell, TableRow } from '@root/components/ui/table';
+import { Button } from '@root/components/ui/button';
+
+import { Sun } from 'lucide-react';
+import { setLoading } from '@src/store/slices/loadingSlice.ts';
 
 
 interface FavoriteCardProps {
-    coord: Coord
+    data: CityResponse;
+    onDelete: (id: number) => void;
 }
 
-const FavoriteCard: FC<FavoriteCardProps> = ({ coord }) => {
-    const currentUnit = useAppSelector((state) => state.unit.currentUnit);
-    const [data, setData] = useState<CurrentWeatherResponse | null>(null);
+const FavoriteCard: FC<FavoriteCardProps> = ({data, onDelete}) => {
+    const { id, name, country, longitude, latitude } = data;
 
-    useEffect(() => {
-        (async () => {
-            const weatherData = await weatherApi.getCurrentWeather(coord);
-            setData(weatherData);
-        })()
-    }, []);
-    
+    const dispatch = useAppDispatch();
+
+    const navigate = useNavigate();
+
+    const handleDelete = () => {
+        onDelete(id);
+    }
+
+    const handleNavigate = async () => {
+        navigate('/weather');
+
+        dispatch(setLoading(true));
+
+        const coord = { lat: latitude, lon: longitude };
+
+        coordsService.set(coord);
+
+        const weatherData = await weatherApi.getCurrentWeather(coord);
+        const forecastData = await weatherApi.getFiveDayForecast(coord);
+
+        dispatch(setWeather(weatherData));
+        dispatch(setForecast(forecastData));
+
+        dispatch(setLoading(false));
+    }
+
     return (
-        <Card>
-            <div>
-                <CardHeader>
-                    <CardTitle className="font-bold grid justify-self-center">
-                        {!data ? (
-                            <Skeleton className="w-2/3 h-5" />
-                        ) : (
-                            <span>
-                                {data.name}, {data.sys.country}
-                            </span>
-                        )}
-                    </CardTitle>
-                    <Separator />
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-2 gap-x-3">
-                        <div>
-                            {!data ? (
-                                <div>
-                                    <Skeleton className="w-20 h-20" />
-                                </div>
-                            ) : (
-                                <>
-                                    <img
-                                        className="size-25"
-                                        src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
-                                        alt={data.weather[0].description}
-                                    />
-                                </>
-                            )}
-                        </div>
-                        <div className="grid grid-rows-4 gap-y-2">
-                            <div>
-                                {!data ? (
-                                    <Skeleton className="w-full h-15" />
-                                ) : (
-                                    <p className="text-md flex items-center justify-center gap-x-2">
-                                        <span>Temp</span>
-                                        <span className="font-bold">
-                                            {data.main.temp}
-                                            {currentUnit === 'metric'
-                                                ? '°C'
-                                                : '°F'}
-                                        </span>
-                                    </p>
-                                )}
-                            </div>
-                            <div>
-                                {!data ? (
-                                    <Skeleton className="w-full h-15" />
-                                ) : (
-                                    <p className="text-md flex items-center justify-center gap-x-2">
-                                        <span>Temp</span>
-                                        <span className="font-bold">
-                                            {data.main.temp}
-                                            {currentUnit === 'metric'
-                                                ? '°C'
-                                                : '°F'}
-                                        </span>
-                                    </p>
-                                )}
-                            </div>
-                            <div>
-                                {!data ? (
-                                    <Skeleton className="w-full h-15" />
-                                ) : (
-                                    <p className="text-md flex items-center justify-center gap-x-2">
-                                        <span>Temp</span>
-                                        <span className="font-bold">
-                                            {data.main.temp}
-                                            {currentUnit === 'metric'
-                                                ? '°C'
-                                                : '°F'}
-                                        </span>
-                                    </p>
-                                )}
-                            </div>
-                            <div>
-                                {!data ? (
-                                    <Skeleton className="w-full h-15" />
-                                ) : (
-                                    <p className="text-md flex items-center justify-center gap-x-2">
-                                        <span>Temp</span>
-                                        <span className="font-bold">
-                                            {data.main.temp}
-                                            {currentUnit === 'metric'
-                                                ? '°C'
-                                                : '°F'}
-                                        </span>
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </div>
-        </Card>
+        <TableRow>
+            <TableCell>{name}</TableCell>
+            <TableCell>{country}</TableCell>
+            <TableCell className="text-center">
+                <div className="flex items-center justify-center gap-x-5">
+                    <span>{longitude}</span>
+                    <span>{latitude}</span>
+                </div>
+            </TableCell>
+            <TableCell className="flex items-center justify-end gap-x-2">
+                <Button
+                    variant="default"
+                    className="cursor-pointer group bg-indigo-600 hover:bg-indigo-600"
+                    onClick={handleNavigate}
+                    size="icon"
+                >
+                    <Sun className="size-5 group-hover:fill-yellow-500" />
+                </Button>
+                <FavoriteCityRemoveDialog onDelete={handleDelete} />
+            </TableCell>
+        </TableRow>
     );
 };
 

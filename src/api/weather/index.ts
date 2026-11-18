@@ -1,7 +1,5 @@
-import { weatherClient } from '@src/api/axiosClient';
-import type {
-    UserWeatherParams,
-} from '@src/types/request';
+import { weatherClient } from '@src/api/weather/axiosClient';
+import type { UserWeatherParams } from '@src/types/request';
 import type {
     CurrentWeatherResponse,
     FiveDayForecastResponse,
@@ -33,4 +31,4 @@ class WeatherApi {
     }
 }
 
-export const weatherApi = new WeatherApi();
+export default new WeatherApi();

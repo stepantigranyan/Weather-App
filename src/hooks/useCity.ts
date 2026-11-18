@@ -1,19 +1,19 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import type citiesService from '@src/services/citiesService.ts';
-import type { City, CityCreationAttributes } from '@src/types/other';
+import type { CityResponse } from '@src/types/other';
 
 export const useCity = (service: typeof citiesService) => {
-    const [cities, setCities] = useState<City[]>(service.getAll());
-    
-    const addCity = (city: CityCreationAttributes) => {
+    const [cities, setCities] = useState<CityResponse[]>(service.getAll());
+
+    const addCity = (city: CityResponse) => {
         const newCities = service.add(city);
         setCities(newCities);
-    }
+    };
 
-    const removeCity = (id: string) => {
+    const removeCity = (id: number) => {
         const newCities = service.remove(id);
         setCities(newCities);
-    }
+    };
 
     return { cities, addCity, removeCity };
 };

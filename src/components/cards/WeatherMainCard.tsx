@@ -14,17 +14,20 @@ import { getFullDate, getDayName } from '@src/utils/getTime';
 import { capitalize } from '@src/utils/capitalize';
 
 const WeatherMainCard = () => {
-    const currentWeather = useAppSelector((state) => state.weather.currentWeather)
+    const loading = useAppSelector((state) => state.loading.loading);
+    const currentWeather = useAppSelector(
+        (state) => state.weather.currentWeather
+    );
     const currentUnit = useAppSelector((state) => state.unit.currentUnit);
 
     const dayName = getDayName();
     const fullDate = getFullDate();
 
     return (
-        <Card className="p-2">
+        <Card>
             <CardHeader>
                 <CardTitle className="text-xl font-bold">
-                    {!currentWeather ? (
+                    {loading ? (
                         <Skeleton className="w-2/3 h-5" />
                     ) : (
                         `${currentWeather.name}, ${currentWeather.sys.country}`
@@ -37,7 +40,7 @@ const WeatherMainCard = () => {
                     <div className="grid grid-cols-2 gap-x-5">
                         <div className="grid grid-rows-2">
                             <div className="content-start">
-                                {!currentWeather ? (
+                                {loading ? (
                                     <div className="grid grid-rows-2 gap-y-2">
                                         <Skeleton className="w-1/2 h-5" />
                                         <Skeleton className="w-2/3 h-5" />
@@ -52,7 +55,7 @@ const WeatherMainCard = () => {
                                 )}
                             </div>
                             <div className="content-center">
-                                {!currentWeather ? (
+                                {loading ? (
                                     <Skeleton className="w-full h-15" />
                                 ) : (
                                     <p className="text-5xl">
@@ -63,7 +66,7 @@ const WeatherMainCard = () => {
                             </div>
                         </div>
                         <div className="content-center justify-self-end">
-                            {!currentWeather ? (
+                            {loading ? (
                                 <div>
                                     <Skeleton className="w-30 h-20" />
                                 </div>
@@ -83,7 +86,7 @@ const WeatherMainCard = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-x-5">
                         <div className="justify-self-start content-start w-full">
-                            {!currentWeather ? (
+                            {loading ? (
                                 <div className="grid grid-rows-2 gap-y-1">
                                     <Skeleton className="w-1/2 h-5" />
                                     <Skeleton className="w-1/3 h-5" />
@@ -99,7 +102,7 @@ const WeatherMainCard = () => {
                             )}
                         </div>
                         <div className="justify-self-end content-end text-end">
-                            {!currentWeather ? (
+                            {loading ? (
                                 <div className="grid grid-rows-3 gap-y-1">
                                     <Skeleton className="w-30 h-5 justify-self-end" />
                                     <Skeleton className="w-20 h-5 justify-self-end" />
